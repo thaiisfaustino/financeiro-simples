@@ -15,33 +15,33 @@ const Modal = {
     }
  }
 
- const transactions = [
-    {
-        id: 1,
-        description: 'Luz',
-        amount: -20000,
-        date: '23/10/2022',
-},
-    {
-        id: 2,
-        description: 'Criacao website',
-        amount: 500000,
-        date: '23/10/2022',
-},
-    {
-        id: 3,
-        description: 'Mercado',
-        amount: -10000,
-        date: '23/10/2022',
-}   
-]
-
-
  const Transaction = {
-    all: transactions, 
+    all: [
+        {
+            description: 'Luz',
+            amount: -20000,
+            date: '23/10/2022',
+        },
+        {
+            description: 'Criacao website',
+            amount: 500000,
+            date: '23/10/2022',
+        },
+        {
+            description: 'Mercado',
+            amount: -10000,
+            date: '23/10/2022',
+        },   
+    ],
+ 
     add(transaction){
         Transaction.all.push(transaction)
         App.reload()
+    },
+
+    remove(index) {
+        Transaction.all.splice(index, 1)
+        App.reaload()
     },
     incomes() {
         let income = 0;
@@ -112,6 +112,42 @@ const Modal = {
     
  }
 
+const Form = {
+    description: document.querySelector('input#description'),
+    amount: document.querySelector('input#amount'),
+    date: document.querySelector('input#date'),
+
+    getValues() {
+        return {
+            description: Form.description.value,
+            amount: Form.amount.value,
+            date: Form.date.value
+        }
+    },
+
+    validadeFields() {
+        const {description, amount, date} = Form.getValues()
+        
+        if(description.trim() === "" || 
+        amount.trim() === "" || 
+        date.trim() === "") {
+            throw new Error("Por favor, preencha todos os campos")
+        }
+    },
+    submit(event) {
+        event.preventDefault()
+
+        try {
+            Form.validadeFields()
+
+        } catch (error) {
+            alert(error.message)
+        }
+
+        Form.formatData()
+        }
+}
+
 const App = {
     init() {
         Transaction.all.forEach(transaction => {
@@ -127,10 +163,3 @@ const App = {
 }
 
 App.init()
-
-Transaction.add({
-    id: 39,
-    description: 'Teste',
-    amount: 2000,
-    date: '30/10/2022'
-})
