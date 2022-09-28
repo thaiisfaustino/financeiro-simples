@@ -38,9 +38,14 @@ const Modal = {
 
 
  const Transaction = {
+    all: transactions, 
+    add(transaction){
+        Transaction.all.push(transaction)
+        App.reload()
+    },
     incomes() {
         let income = 0;
-        transactions.forEach(transaction => {
+        Transaction.all.forEach(transaction => {
             if(transaction.amount > 0) {
                 income += transaction.amount;
             }
@@ -49,7 +54,7 @@ const Modal = {
     },
     expenses() {
         let expense = 0;
-        transactions.forEach(transaction => {
+        Transaction.all.forEach(transaction => {
             if(transaction.amount < 0) {
                 expense += transaction.amount;
             }
@@ -87,6 +92,9 @@ const Modal = {
         .innerHTML = Utils.formatCurrency(Transaction.expenses())
         document.getElementById('totalDisplay')
         .innerHTML = Utils.formatCurrency(Transaction.total())
+    },
+    clearTransactions() {
+        DOM.transactionsContainer.innerHTML = ""
     }
  }
 
@@ -104,8 +112,25 @@ const Modal = {
     
  }
 
-transactions.forEach(function(transaction){
-    DOM.addTransaction(transaction)
-})
+const App = {
+    init() {
+        Transaction.all.forEach(transaction => {
+            DOM.addTransaction(transaction)
+        })
+        
+        DOM.updateBalance()
+    },
+    reload() {
+        DOM.clearTransactions()
+        App.init()
+    },
+}
 
-DOM.updateBalance()
+App.init()
+
+Transaction.add({
+    id: 39,
+    description: 'Teste',
+    amount: 2000,
+    date: '30/10/2022'
+})
